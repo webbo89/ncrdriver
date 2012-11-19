@@ -19,16 +19,19 @@ int main(int argc, char* argv[])
 			ifstream inputfile (argv[1], ios::in|ios::binary|ios::ate);
 			if (inputfile.is_open())
 			{
-				serial.writeString("\x1b"); // BMP to RAM pg164 of NCR7167
 				size = inputfile.tellg();
 				memblock = new char [size];
 				inputfile.seekg (0, ios::beg);
 				inputfile.read (memblock, size);
 				inputfile.close();
 
+				serial.writeString("\x1b"); // BMP to RAM pg164 of NCR7167
+
 				cout << "Just about to write memblock " << size << "\n";
 
 				serial.write(memblock, size);
+
+				sreial.writeString("\n");
 			
 				serial.writeString("\x1d\x2f\x0"); // print RAM image normal density pg171 of NCR7167
 
