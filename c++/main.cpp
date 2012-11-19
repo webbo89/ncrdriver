@@ -17,35 +17,18 @@ int main(int argc, char* argv[])
 			ifstream inputfile (argv[1]);
 			if (inputfile.is_open())
 			{
+			serial.writeString("\x1b"); // BMP to RAM pg164 of NCR7167
+
 				while ( inputfile.good() )
 				{
-					getline (inputfile,line);
-					serial.writeString(line += '\n');
+					getline(inputfile,line);
+					serial.write(line);
 				}
 				inputfile.close();
 			}
-	
-			if(argc > 2) {
-				for(int i = 0; i < atoi(argv[2]); i++){
-					serial.writeString("\n");
-				}
-			}
-			if(argc > 3) {
-                                if(strcmp(argv[3], "cut") == 0){
-					if(atoi(argv[2]) < 4){
-						serial.writeString("\n\n\n\n");
-					}
-                                        serial.writeString("\x1b\x69");
-                                } else {
-                                        // do nothing   
-                                }
-                        }
-			if(argc > 4) {
 			
-			} else {
-					serial.writeString("\x1b\x07"); //BEEP!
-			}
-
+			serial.writeString("\x1d\x2f\x0"); // print RAM image normal density pg171 of NCR7167
+	
 		}
 
         //Simulate doing something else while the serial device replies.
