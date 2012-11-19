@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
 				inputfile.read (memblock, size);
 				inputfile.close();
 
-				cout << "Just about to write memblock" << "\n";
+				cout << "Just about to write memblock " << size << "\n";
 
 				serial.write(memblock, size);
 			
