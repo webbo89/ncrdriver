@@ -19,8 +19,8 @@ int main(int argc, char* argv[])
         BufferedAsyncSerial serial("/dev/ttyUSB0",9600);
 		if(argc > 1) {
 			ifstream inputfile (argv[1], ios::in|ios::binary|ios::ate);
-			//if (inputfile.is_open())
-			//{
+			if (inputfile.is_open())
+			{
 				size = inputfile.tellg();
 				memblock = new char [size];
 				inputfile.seekg (0, ios::beg);
@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
 				//cout << "Done" << "\n";
 
 				//delete[] memblock;
-			//}
+			}
 		}
 		cout << "closing serial \n";
 		serial.close();
