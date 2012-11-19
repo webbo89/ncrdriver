@@ -32,9 +32,8 @@ int main(int argc, char* argv[])
 
 				delete[] memblock;
 			}
-
-        serial.close();
 		}
+		serial.close();
   
     } catch(boost::system::system_error& e)
     {
