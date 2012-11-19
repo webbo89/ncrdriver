@@ -26,9 +26,13 @@ int main(int argc, char* argv[])
 				inputfile.read (memblock, size);
 				inputfile.close();
 
+				cout << "Just about to write memblock" << eol;
+
 				serial.write(memblock, size);
 			
 				serial.writeString("\x1d\x2f\x0"); // print RAM image normal density pg171 of NCR7167
+
+				cout << "Done";
 
 				delete[] memblock;
 			}
