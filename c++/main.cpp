@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 
 				cout << "Written memblock and vblf \n";
 			
-				serial.writeString("\x1d\x2f"); // print RAM image normal density pg171 of NCR7167
+				serial.writeString("\x1d\x2f\x0"); // print RAM image normal density pg171 of NCR7167
 
 				cout << "Done" << "\n";
 
