@@ -39,6 +39,8 @@ int main(int argc, char* argv[])
 
 				cout << "Done" << "\n";
 
+				cout << memblock << "\n";
+
 				delete[] memblock;
 			}
 		}
