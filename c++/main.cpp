@@ -10,6 +10,8 @@ using namespace boost;
 int main(int argc, char* argv[])
 {
 	string line;
+	ifstream::pos_type size;
+	char * memblock;
 
 	try {
         BufferedAsyncSerial serial("/dev/ttyUSB0",9600);
@@ -17,28 +19,19 @@ int main(int argc, char* argv[])
 			ifstream inputfile (argv[1]);
 			if (inputfile.is_open())
 			{
-			serial.writeString("\x1b"); // BMP to RAM pg164 of NCR7167
-
-				while ( inputfile.good() )
-				{
-					getline(inputfile,line);
-					serial.write(line);
-				}
+				serial.writeString("\x1b"); // BMP to RAM pg164 of NCR7167
+				size = inputinputfile.tellg();
+				memblock = new char [size];
+				inputfile.seekg (0, ios::beg);
+				inputfile.read (memblock, size);
 				inputfile.close();
-			}
+
+				serial.write(memblock, size);
 			
-			serial.writeString("\x1d\x2f\x0"); // print RAM image normal density pg171 of NCR7167
-	
+				serial.writeString("\x1d\x2f\x0"); // print RAM image normal density pg171 of NCR7167
+
+				delete[] memblock;
 		}
-
-        //Simulate doing something else while the serial device replies.
-        //When the serial device replies, the second thread stores the received
-        //data in a buffer.
-        //this_thread::sleep(posix_time::seconds(2));
-
-        //Always returns immediately. If the terminator \r\n has not yet
-        //arrived, returns an empty string.
-        //cout<<serial.readStringUntil("\r\n")<<endl;
 
         serial.close();
   
