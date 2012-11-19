@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
 	try {
         BufferedAsyncSerial serial("/dev/ttyUSB0",9600);
 		if(argc > 1) {
-			ifstream inputfile (argv[1], ios::in|ios::binary);
+			ifstream inputfile (argv[1], ios::in|ios::binary|ios::ate);
 			if (inputfile.is_open())
 			{
 				size = inputfile.tellg();
