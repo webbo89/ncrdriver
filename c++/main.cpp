@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
 			if (inputfile.is_open())
 			{
 				serial.writeString("\x1b"); // BMP to RAM pg164 of NCR7167
-				size = inputinputfile.tellg();
+				size = inputfile.tellg();
 				memblock = new char [size];
 				inputfile.seekg (0, ios::beg);
 				inputfile.read (memblock, size);
@@ -31,9 +31,10 @@ int main(int argc, char* argv[])
 				serial.writeString("\x1d\x2f\x0"); // print RAM image normal density pg171 of NCR7167
 
 				delete[] memblock;
-		}
+			}
 
         serial.close();
+		}
   
     } catch(boost::system::system_error& e)
     {
