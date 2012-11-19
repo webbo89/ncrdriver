@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
 				inputfile.read (memblock, size);
 				inputfile.close();
 
-				for (int i = 0; i < atoi(size); i++) //  doesn't work with '\0' either
+				for (int i = 0; i < size; i++) //  doesn't work with '\0' either
 				{
 						cout << memblock[i] << endl;
 				}
