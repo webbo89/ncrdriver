@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
 
 				cout << "Done" << "\n";
 
-				cout << memblock << "\n";
+				cout << hex << memblock << endl;
 
 				delete[] memblock;
 			}
