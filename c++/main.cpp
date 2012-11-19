@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
 			///	serial.writeString("\x1b"); // BMP to RAM pg164 of NCR7167
 
 				 
-				cout << '\x1b' << memblock << "\n";
+				cout << hex <<'\x1b' << memblock << "\n";
 				//cout << "Just about to write memblock " << size << "\n";
 
 				//serial.writeString('\x1b'+stringblock);
