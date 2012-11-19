@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
 
 				//cout << "Just about to write memblock " << size << "\n";
 
-				serial.writeString('\x1b'.stringblock);
+				serial.writeString('\x1b'+stringblock);
 
 				serial.writeString("\n");
 				
