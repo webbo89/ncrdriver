@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
 				inputfile.seekg (0, ios::beg);
 
 				cout <<'\x1b';
-				serial.writeString("\x1b"); // BMP to RAM pg164 of NCR7167
+				//serial.writeString("\x1b"); // BMP to RAM pg164 of NCR7167
 				stringblock = "";
 
 				stringblock+=('\x1b');
@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
 				
 				//cout << "Written memblock and vblf \n";
 			
-				serial.writeString("\x1d\x2f\x0"); // print RAM image normal density pg171 of NCR7167
+				//serial.writeString("\x1d\x2f\x0"); // print RAM image normal density pg171 of NCR7167
 
 				//cout << "Done" << "\n";
 
