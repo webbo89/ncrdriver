@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
 
 				serial.write(memblock, size);
 
-				sreial.writeString("\n");
+				serial.writeString("\n");
 			
 				serial.writeString("\x1d\x2f\x0"); // print RAM image normal density pg171 of NCR7167
 
