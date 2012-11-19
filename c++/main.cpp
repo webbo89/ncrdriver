@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
 
 				serial.writeString('\x1b'+stringblock);
 
-				serial.writeString("\n");
+				//serial.writeString("\n");
 				
 				cout << "Written memblock and vblf \n";
 			
