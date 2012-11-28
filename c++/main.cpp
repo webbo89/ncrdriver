@@ -118,9 +118,11 @@ int main(int argc, char* argv[])
         unsigned int byte = 0;
         unsigned int endLine = 128; 
         int j = 0;
-        int  k = 0;
+        int k = 0;
+        int i = 0;
         
-        for(int i = 624; i >= 0; i--){
+        for(int f = 624; f >= 0; f--){
+            i = (25*(f/25)) + (25-(f % 25)) - 1;
             cout <<"s I " << i << " :: K " << k << " :: J " << j << endl;
             modbit = data[i] % 2;
             if(modbit == 1){
