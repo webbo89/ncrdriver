@@ -17,23 +17,17 @@ string getShortcode (int date)
 {
     int length = 28;
     char base[29] = "abcdefghjkmnpqrstwxz23456789";
-    cout << length << " length" << endl;
     string out = "";
-    string out1 = "";
     string shorturl = "";
 
     while(date > length - 1)
     {
-        out = base[(date % length)];
-        out += out1;
-        out1 = out;
-        
-        //out1 += out1;
+        out = base[date % length] + out;
         date = floor( date / length );
     }
 
     shorturl += base[date];
-    shorturl.append(out1);
+    shorturl += (out);
         
     return shorturl;
 }
@@ -41,9 +35,9 @@ string getShortcode (int date)
 
 int main(int argc, char* argv[])
 {
-        string USBPort = "/dev/ttyUSB0";
+        string USBPort = "";
         bool cut = true;
-        int precutNewlines = 3; 
+        int precutNewlines = 0; 
         string message = "";
         string line = "";
         int time;
@@ -55,64 +49,65 @@ int main(int argc, char* argv[])
         unsigned char * data;
         stringstream ss;
         QRcode *qrcode;
+
+        // Check enough parameters
+        if (argc != 7){
+            cout << "Incorrect number of parameters (expecting ./async port(int) time(epoch) messagepath cut(bool) lines(int) beep(bool)" << endl;
+            cout << argc << " parameters given" << endl;
+            return 1;
+        }
         
-        
-        cout << getShortcode(atoi(argv[1])) << endl;
-        return 0;
-        
-        // Set USB port for serial communication - default to /dev/ttyUSB0
+        // Set USB port for serial communication
         if(argc > 0){
             USBPort = "/dev/ttyUSB";
             USBPort += argv[1];
-        } else {
-            USBPort = "/dev/ttyUSB0";
         }
         
         // Set time of interaction (epoch expected)
+        string strTime = "";
         if(argc > 1){
-            time = atoi(argv[4]);
+            strTime = argv[2];
+            strTime = strTime.substr(3);
+            time = atoi(strTime.c_str());
         }
         
-        // Set file path to message - default to message.txt in current directory
+        // Set file path to message
         if(argc > 2){
-            messageFile.open(argv[2]);
-        } else {
-            messageFile.open("message.txt");
+            messageFile.open(argv[3]);
         }
         
         // Set cut value, default to true
         if(argc > 3){
-            if(argv[2] == "false" | argv[2] == "no"){
+            if(argv[4] == "false" | argv[4] == "no"){
                 cut = false;
             }
         }
         
         // Set new line count before cut - default to 3
         if(argc > 4){
-            precutNewlines = atoi(argv[3]);
+            precutNewlines = atoi(argv[5]);
         }
         
         // Set beep value, default to true
         if(argc > 5){
-            beep = true;
-        } else {
-            beep = false;
+            if(argv[6] == false){
+                beep = false;
+            }
         }
         
-        
-        //read text file into message
+        // Read text file into message
         while(messageFile.good()){
            getline(messageFile,line);
            message += line += "\n";
         }
         
-        //make shorturl
-        shortURL = "http://icrobot.net/eqrfzeqrfz";// += getShortcode(time);
+        // Make shorturl
+        shortURL = "http://icrobot.net/" + getShortcode(time);
         
-        //create qr
+        // Create QRCode
         qrcode = QRcode_encodeString(shortURL.c_str(), 0, QR_ECLEVEL_H, QR_MODE_8, 0);
         
-        //create bitmap
+        // Create bitmap
         data = qrcode->data;
         width = qrcode->width;
         
@@ -132,20 +127,15 @@ int main(int argc, char* argv[])
         geoff.write((char*)&width, 1);
         header.assign("\x00\x00\x00\x01\x00\x01\x00\x00\x00\x00\x00\x64\x00\x00\x00\xc4\x0e\x00\x00\xc4\x0e\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff\xff\x00", 39);
         geoff << header;
-        
-        
+
+        // QR to bitmap algorithm
         unsigned int modbit = 0;
         unsigned int bit = 0;
         unsigned int byte = 0;
-        unsigned int endLine = 128; 
-        int j = 0;
-        int k = 0;
-        int i = 0;
-        
+        int i = 0, j = 0, k = 0;
         
         for(int f = width*width-1; f >= 0; f--){
             i = (width*(f/width)) + (width-(f % width)) - 1;
-            //cout <<"s I " << i << " :: K " << k << " :: J " << j << endl;
             modbit = data[i] % 2;
             if(modbit == 1){
                 bit = 0;
@@ -153,32 +143,22 @@ int main(int argc, char* argv[])
                 bit = 1;
             }
 
-            //cout <<" MOD " << modbit << " I " << i  << " : K " << k << endl;
             byte = byte + (bit * pow(2,(7-(k % 8))));
-            //cout << " fresh byte " << byte << endl;
                        
             if(k % 8 == 7){ // 7, 15, 23 etc.
-                //write byte
                 geoff.write((char*)&byte, 1);
                 byte = 0;
                 j++;
-                
             }
             
             if(k == (width - 1)) {
-                //endLine = bit * pow(2,0);
                 geoff.write((char*)&byte, 1);
                 j = 0;
                 k = 0;
                 byte = 0;
-                //return 0;
             } else {
                 k++;
             }
-            if(i == 60){
-                //return 0;
-            }
-            //cout <<"e I " << i << " :: K " << k << " :: J " << j << endl;
         }
 
         geoff.close();
@@ -207,8 +187,9 @@ int main(int argc, char* argv[])
             }
             serial.writeString(stringblock);
             cout << stringblock;
-            serial.writeString("\x1d\x2f\x0");
-
+            serial.writeString("\n");
+            serial.writeString("\x1d\x2f\x3");
+            serial.writeString("image worked!!!!");
             serial.close();
   
         } catch(boost::system::system_error& e) {
