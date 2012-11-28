@@ -12,13 +12,6 @@
 using namespace std;
 using namespace boost;
 
-string getHex(int byte){
-    stringstream stream;
-    stream << hex << byte;
-    
-    return"0x" + stream.str();
-}
-
 // Shortcode function
 string getShortcode (int date)
 {
@@ -40,7 +33,7 @@ string getShortcode (int date)
 
 int main(int argc, char* argv[])
 {
-        string USBPort = "";
+        string USBPort = "/dev/ttyUSB0";
         bool cut = true;
         int precutNewlines = 3; 
         string message = "";
@@ -169,30 +162,31 @@ int main(int argc, char* argv[])
 
         geoff.close();
        
-        
-        
+        string stringblock;
+        char* memblock;
+        int size2;
         try {
             BufferedAsyncSerial serial(USBPort, 9600);
             
-            stringblock = ('\x1b');
-            
-            //memblock = QRcode_encodeString("http://www.google.co.uk", 0, QR_ECLEVEL_H, QR_MODE_8, 0)->data;
-            
-            qrcode = 
+            ifstream geoff2("bmpting.bmp", ios::in|ios::binary|ios::ate);
+            if (geoff2.is_open()) {
+                size2 = geoff2.tellg();
+                memblock = new char [size2];
+                geoff2.seekg (0, ios::beg);
 
-            data = qrcode->data;
-            width = qrcode->width;
-            
-            cout << width;
-            QRcode_free(qrcode);
-            
-            ss << data;
-            
-            stringblock += ss.str();
-            
+                stringblock = "";
+
+                stringblock+=("\x1b");
+
+                geoff2.read(memblock, size2);
+                geoff2.close();
+            }
+            for (int i = 0; i < size2; i++) { // doesn't work with '\0' either
+                stringblock+=(memblock[i]);
+            }
             serial.writeString(stringblock);
-            
-            serial.writeString("\x1d\x2f\x0");
+            cout << stringblock;
+            serial.writeString("\x1d\x2f\x3");
 
             serial.close();
   
