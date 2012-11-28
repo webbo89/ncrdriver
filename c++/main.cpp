@@ -93,7 +93,7 @@ int main(int argc, char* argv[])
         //}
         
         //make shorturl
-        shortURL = "http://icrobot.net/";// += getShortcode(time);
+        shortURL = "http://icrobot.net/eqrfzeqrfz";// += getShortcode(time);
         
         //create qr
         qrcode = QRcode_encodeString(shortURL.c_str(), 0, QR_ECLEVEL_H, QR_MODE_8, 0);
@@ -102,14 +102,21 @@ int main(int argc, char* argv[])
         data = qrcode->data;
         width = qrcode->width;
         
-        
-        //cout << width << endl;
- 
-        string header = "";
-        header.assign("\x42\x4D\xA2\x00\x00\x00\x00\x00\x00\x00\x3E\x00\x00\x00\x28\x00\x00\x00\x19\x00\x00\x00\x19\x00\x00\x00\x01\x00\x01\x00\x00\x00\x00\x00\x64\x00\x00\x00\xc4\x0e\x00\x00\xc4\x0e\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff\xff\x00", 62);
-        
         ofstream geoff("bmpting.bmp");
         
+        unsigned int size = 62 + width*width;
+        
+        string header = "";
+        header.assign("\x42\x4D",2);
+        geoff << header;
+        geoff.write((char*)&size, 1);
+        header.assign("\x00\x00\x00\x00\x00\x00\x00\x3E\x00\x00\x00\x28\x00\x00\x00",15);
+        geoff << header;
+        geoff.write((char*)&width, 1);
+        header.assign("\x00\x00\x00",3);
+        geoff << header;
+        geoff.write((char*)&width, 1);
+        header.assign("\x00\x00\x00\x01\x00\x01\x00\x00\x00\x00\x00\x64\x00\x00\x00\xc4\x0e\x00\x00\xc4\x0e\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff\xff\x00", 39);
         geoff << header;
         
         
@@ -121,9 +128,10 @@ int main(int argc, char* argv[])
         int k = 0;
         int i = 0;
         
-        for(int f = 624; f >= 0; f--){
-            i = (25*(f/25)) + (25-(f % 25)) - 1;
-            cout <<"s I " << i << " :: K " << k << " :: J " << j << endl;
+        
+        for(int f = width*width-1; f >= 0; f--){
+            i = (width*(f/width)) + (width-(f % width)) - 1;
+            //cout <<"s I " << i << " :: K " << k << " :: J " << j << endl;
             modbit = data[i] % 2;
             if(modbit == 1){
                 bit = 0;
@@ -131,9 +139,9 @@ int main(int argc, char* argv[])
                 bit = 1;
             }
 
-            cout <<" MOD " << modbit << " I " << i  << " : K " << k << endl;
+            //cout <<" MOD " << modbit << " I " << i  << " : K " << k << endl;
             byte = byte + (bit * pow(2,(7-(k % 8))));
-            cout << " fresh byte " << byte << endl;
+            //cout << " fresh byte " << byte << endl;
                        
             if(k % 8 == 7){ // 7, 15, 23 etc.
                 //write byte
@@ -143,9 +151,9 @@ int main(int argc, char* argv[])
                 
             }
             
-            if(j > 2 && k == 24) {
-                endLine = bit * pow(2,7);
-                geoff.write((char*)&endLine, 1);
+            if(k == (width - 1)) {
+                //endLine = bit * pow(2,0);
+                geoff.write((char*)&byte, 1);
                 j = 0;
                 k = 0;
                 byte = 0;
@@ -156,13 +164,13 @@ int main(int argc, char* argv[])
             if(i == 60){
                 //return 0;
             }
-            cout <<"e I " << i << " :: K " << k << " :: J " << j << endl;
+            //cout <<"e I " << i << " :: K " << k << " :: J " << j << endl;
         }
 
         geoff.close();
        
         
-        /*
+        
         try {
             BufferedAsyncSerial serial(USBPort, 9600);
             
@@ -191,5 +199,5 @@ int main(int argc, char* argv[])
         } catch(boost::system::system_error& e) {
                 cout<<"Error: "<<e.what()<<endl;
                 return 1;
-        }*/
+        }
 }
