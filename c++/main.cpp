@@ -15,19 +15,27 @@ using namespace boost;
 // Shortcode function
 string getShortcode (int date)
 {
-    /*string base = "abcdefghjkmnpqrstwxz23456789";
-    int length = base.length();
+    int length = 28;
+    char base[29] = "abcdefghjkmnpqrstwxz23456789";
+    cout << length << " length" << endl;
+    string out = "";
     string out1 = "";
+    string shorturl = "";
 
     while(date > length - 1)
     {
-        out1 = base[fmod(date, length)] += out1;
+        out = base[(date % length)];
+        out += out1;
+        out1 = out;
+        
+        //out1 += out1;
         date = floor( date / length );
     }
 
-    string shorturl = base[date] += out1;
+    shorturl += base[date];
+    shorturl.append(out1);
         
-    return shorturl;*/
+    return shorturl;
 }
 
 
@@ -40,6 +48,8 @@ int main(int argc, char* argv[])
         string line = "";
         int time;
         string shortURL;
+        bool beep = true;
+        ifstream messageFile;
         
         int width;
         unsigned char * data;
@@ -47,9 +57,13 @@ int main(int argc, char* argv[])
         QRcode *qrcode;
         
         
+        cout << getShortcode(atoi(argv[1])) << endl;
+        return 0;
+        
         // Set USB port for serial communication - default to /dev/ttyUSB0
         if(argc > 0){
-           // USBPort = "/dev/ttyUSB" += argv[1];
+            USBPort = "/dev/ttyUSB";
+            USBPort += argv[1];
         } else {
             USBPort = "/dev/ttyUSB0";
         }
@@ -61,9 +75,9 @@ int main(int argc, char* argv[])
         
         // Set file path to message - default to message.txt in current directory
         if(argc > 2){
-           //ifstream messageFile(argv[2]);
+            messageFile.open(argv[2]);
         } else {
-          // ifstream messageFile("message.txt");
+            messageFile.open("message.txt");
         }
         
         // Set cut value, default to true
@@ -78,12 +92,19 @@ int main(int argc, char* argv[])
             precutNewlines = atoi(argv[3]);
         }
         
+        // Set beep value, default to true
+        if(argc > 5){
+            beep = true;
+        } else {
+            beep = false;
+        }
+        
         
         //read text file into message
-        //while(messageFile.good()){
-         //   getline(messageFile,line);
-          //  message += line += "\n";
-        //}
+        while(messageFile.good()){
+           getline(messageFile,line);
+           message += line += "\n";
+        }
         
         //make shorturl
         shortURL = "http://icrobot.net/eqrfzeqrfz";// += getShortcode(time);
@@ -186,7 +207,7 @@ int main(int argc, char* argv[])
             }
             serial.writeString(stringblock);
             cout << stringblock;
-            serial.writeString("\x1d\x2f\x3");
+            serial.writeString("\x1d\x2f\x0");
 
             serial.close();
   
