@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <ctime>
+#include <stdio.h>
 #include <boost/thread.hpp>
 #include "BufferedAsyncSerial.h"
 #include "../libqrencode/qrencode.h"
@@ -11,6 +12,12 @@
 using namespace std;
 using namespace boost;
 
+string getHex(int byte){
+    stringstream stream;
+    stream << hex << byte;
+    
+    return"0x" + stream.str();
+}
 
 // Shortcode function
 string getShortcode (int date)
@@ -86,7 +93,7 @@ int main(int argc, char* argv[])
         //}
         
         //make shorturl
-        shortURL = "hhtp://icrobot.net/";// += getShortcode(time);
+        shortURL = "http://icrobot.net/";// += getShortcode(time);
         
         //create qr
         qrcode = QRcode_encodeString(shortURL.c_str(), 0, QR_ECLEVEL_H, QR_MODE_8, 0);
@@ -95,45 +102,63 @@ int main(int argc, char* argv[])
         data = qrcode->data;
         width = qrcode->width;
         
-        cout << width << endl;
+        
+        //cout << width << endl;
  
         string header = "";
         header.assign("\x42\x4D\xA2\x00\x00\x00\x00\x00\x00\x00\x3E\x00\x00\x00\x28\x00\x00\x00\x19\x00\x00\x00\x19\x00\x00\x00\x01\x00\x01\x00\x00\x00\x00\x00\x64\x00\x00\x00\xc4\x0e\x00\x00\xc4\x0e\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff\xff\x00", 62);
         
-        ofstream geoff ("bmpting.bmp");
+        ofstream geoff("bmpting.bmp");
         
-        int j;
-        while(*data++){
-            j++;
-            cout << hex << data[j];
-        }
-        
-
-        int bit;
-        string bitstring;
-        
-        for(int i = 0; i <= 624; i++){
-            bit = data[i] % 2;
-            if(bit == 1){
-                bitstring.assign("\x00", 1);
-            } else {
-                bitstring = "\x01";
-            }
-            if (i % 25 == 0){
-                if(data[i] == 1){
-                    header += "\x80";
-                } else {
-                    header.append("\x00", 1);
-                }
-                header += bitstring;
-            } else {
-                header += bitstring;
-            }
-        }
-
         geoff << header;
-        geoff.close();
         
+        
+        unsigned int modbit = 0;
+        unsigned int bit = 0;
+        unsigned int byte = 0;
+        unsigned int endLine = 128; 
+        int j = 0;
+        int  k = 0;
+        
+        for(int i = 624; i >= 0; i--){
+            cout <<"s I " << i << " :: K " << k << " :: J " << j << endl;
+            modbit = data[i] % 2;
+            if(modbit == 1){
+                bit = 0;
+            } else {
+                bit = 1;
+            }
+
+            cout <<" MOD " << modbit << " I " << i  << " : K " << k << endl;
+            byte = byte + (bit * pow(2,(7-(k % 8))));
+            cout << " fresh byte " << byte << endl;
+                       
+            if(k % 8 == 7){ // 7, 15, 23 etc.
+                //write byte
+                geoff.write((char*)&byte, 1);
+                byte = 0;
+                j++;
+                
+            }
+            
+            if(j > 2 && k == 24) {
+                endLine = bit * pow(2,7);
+                geoff.write((char*)&endLine, 1);
+                j = 0;
+                k = 0;
+                byte = 0;
+                //return 0;
+            } else {
+                k++;
+            }
+            if(i == 60){
+                //return 0;
+            }
+            cout <<"e I " << i << " :: K " << k << " :: J " << j << endl;
+        }
+
+        geoff.close();
+       
         
         /*
         try {
