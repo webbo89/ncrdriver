@@ -25,39 +25,39 @@ int main(int argc, char* argv[])
 				memblock = new char [size];
 				inputfile.seekg (0, ios::beg);
 
-				cout <<'\x1b';
+				//cout <<'\x1b';
 				//serial.writeString("\x1b"); // BMP to RAM pg164 of NCR7167
 				stringblock = "";
 
-				stringblock+=('\x1b');
+				//stringblock+=("\x1b");
+serial.writeString("\x1b");
 
 				inputfile.read (memblock, size);
 				inputfile.close();
 
 				for (int i = 0; i < size; i++) //  doesn't work with '\0' either
 				{
-					stringblock+=(memblock[i]);
+					stringblock.append((char*)&memblock[i], 1);
+					//cout << stringblock.substr(i, 1) << endl;
 				}
+				cout << stringblock << endl;
 				
 				//serial.writeString(stringblock);
-				 
-				//cout << hex <<'\x1b' << memblock << "\n";
-			//	cout << "Just about to write memblock " << size << "\n";
 
-				//serial.writeString('\x1b'+stringblock);
+				serial.write(stringblock.c_str(), (int)size);
 
-				//serial.writeString("\n");
+				serial.writeString("\n");
 				
 				//cout << "Written memblock and vblf \n";
 			
-				//serial.writeString("\x1d\x2f\x0"); // print RAM image normal density pg171 of NCR7167
+				serial.writeString("\x1d\x2f\x0"); // print RAM image normal density pg171 of NCR7167
 
 				//cout << "Done" << "\n";
 
-				//delete[] memblock;
+				delete[] memblock;
 			}
 		}
-		cout << "closing serial \n";
+		cout << "closing serial ";
 		serial.close();
   
     } catch(boost::system::system_error& e)
