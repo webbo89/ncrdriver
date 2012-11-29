@@ -98,7 +98,7 @@ int main(int argc, char* argv[])
         // Read text file into message
         while(messageFile.good()){
            getline(messageFile,line);
-           message += line += "\n";
+           message += line + "\n";
         }
         
         // Make shorturl
@@ -113,7 +113,7 @@ int main(int argc, char* argv[])
         
         ofstream geoff("bmpting.bmp");
         
-        unsigned int size = 62 + width*width;
+        unsigned int size = 62 + (width*(width + (8- (width % 8))))/8;
         
         string header = "";
         header.assign("\x42\x4D",2);
@@ -163,9 +163,11 @@ int main(int argc, char* argv[])
 
         geoff.close();
        
+        
+        /*
         string stringblock;
         char* memblock;
-        int size2;
+        ifstream::pos_type size2;
         try {
             BufferedAsyncSerial serial(USBPort, 9600);
             
@@ -177,13 +179,13 @@ int main(int argc, char* argv[])
 
                 stringblock = "";
 
-                stringblock+=("\x1b");
+                stringblock += ("\x1b");
 
                 geoff2.read(memblock, size2);
                 geoff2.close();
             }
-            for (int i = 0; i < size2; i++) { // doesn't work with '\0' either
-                stringblock+=(memblock[i]);
+            for (int i = 0; i < size2; i++) {
+                stringblock += (memblock[i]);
             }
             serial.writeString(stringblock);
             cout << stringblock;
@@ -195,5 +197,59 @@ int main(int argc, char* argv[])
         } catch(boost::system::system_error& e) {
                 cout<<"Error: "<<e.what()<<endl;
                 return 1;
-        }
+        }*/
+        
+        
+        ifstream::pos_type filesize;
+        char * memblock;
+        string stringblock;
+
+        try {
+            BufferedAsyncSerial serial("/dev/ttyUSB0",9600);
+                
+            ifstream inputfile ("smallface.bmp", ios::in|ios::binary|ios::ate);
+            if (inputfile.is_open())
+            {
+                filesize = inputfile.tellg();
+                memblock = new char [filesize];
+                inputfile.seekg (0, ios::beg);
+
+                //cout <<'\x1b';
+                serial.writeString("\x1b"); // BMP to RAM pg164 of NCR7167
+                stringblock = "";
+
+                stringblock+=("\x1b");
+
+                inputfile.read (memblock, filesize);
+                inputfile.close();
+
+                for (int i = 0; i < filesize; i++) // doesn't work with '\0' either
+                {
+                    stringblock+=(memblock[i]);
+                }
+
+                //serial.writeString("\x1b");
+
+                cout << memblock << endl;
+                cout << "Just about to write memblock " << filesize << endl;
+
+                serial.writeString(stringblock);
+
+                serial.writeString("\n");
+
+                cout << "Written memblock and vblf" << endl;
+
+                serial.writeString("\x1d\x2f\x0"); // print RAM image normal density pg171 of NCR7167
+
+                cout << "Done" << endl;
+
+                delete[] memblock;
+            }
+            cout << "closing serial" << endl;
+            serial.close();
+                } catch(boost::system::system_error& e)
+                {
+                    cout<<"Error: "<<e.what()<<endl;
+                    return 1;
+                }      
 }
