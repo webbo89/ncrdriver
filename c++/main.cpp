@@ -113,7 +113,9 @@ int main(int argc, char* argv[])
         
         ofstream geoff("bmpting.bmp");
         
-        unsigned int size = 62 + (width*(width + (8- (width % 8))))/8;
+
+		int realwidth = width*4;
+        unsigned int size = 62 + (realwidth*(realwidth + (8- (realwidth % 8))))/8;
         
         string header = "";
         header.assign("\x42\x4D",2);
@@ -121,10 +123,10 @@ int main(int argc, char* argv[])
         geoff.write((char*)&size, 1);
         header.assign("\x00\x00\x00\x00\x00\x00\x00\x3E\x00\x00\x00\x28\x00\x00\x00",15);
         geoff << header;
-        geoff.write((char*)&width, 1);
+        geoff.write((char*)&realwidth, 1);
         header.assign("\x00\x00\x00",3);
         geoff << header;
-        geoff.write((char*)&width, 1);
+        geoff.write((char*)&realwidth, 1);
         header.assign("\x00\x00\x00\x01\x00\x01\x00\x00\x00\x00\x00\x64\x00\x00\x00\xc4\x0e\x00\x00\xc4\x0e\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff\xff\x00", 39);
         geoff << header;
 
@@ -138,8 +140,8 @@ int main(int argc, char* argv[])
         for(int f = width-1; f >= 0; f--){
 			line = ((f/width));
 			for (int g=0; g <4; g++) {
-				for (i = width-1; i >= 0; i--) {
-					p = line*width + i;
+				for (i = realwidth-1; i >= 0; i--) {
+					p = line*width + (i%width);
 					modbit = data[[p] % 2;
 					if(modbit == 1){
 						bit = 0;
