@@ -107,7 +107,7 @@ int main(int argc, char* argv[])
         // Create QRCode
         qrcode = QRcode_encodeString(shortURL.c_str(), 0, QR_ECLEVEL_H, QR_MODE_8, 0);
         
-        // Create bitmap
+        // Create bitlmap
         data = qrcode->data;
         width = qrcode->width;
         
@@ -116,18 +116,14 @@ int main(int argc, char* argv[])
         unsigned int size = 62 + (width*(width + (8- (width % 8))))/8;
         
         string header = "";
-        header.assign("\x42\x4D",2);
-        geoff << header;
+        geoff.write("\x42\x4D",2);
         geoff.write((char*)&size, 1);
-        header.assign("\x00\x00\x00\x00\x00\x00\x00\x3E\x00\x00\x00\x28\x00\x00\x00",15);
-        geoff << header;
+        geoff.write("\x00\x00\x00\x00\x00\x00\x00\x3E\x00\x00\x00\x28\x00\x00\x00",15);
         geoff.write((char*)&width, 1);
-        header.assign("\x00\x00\x00",3);
-        geoff << header;
+        geoff.write("\x00\x00\x00",3);
         geoff.write((char*)&width, 1);
-        header.assign("\x00\x00\x00\x01\x00\x01\x00\x00\x00\x00\x00\x64\x00\x00\x00\xc4\x0e\x00\x00\xc4\x0e\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff\xff\x00", 39);
-        geoff << header;
-
+        geoff.write("\x00\x00\x00\x01\x00\x01\x00\x00\x00\x00\x00\x64\x00\x00\x00\xc4\x0e\x00\x00\xc4\x0e\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff\xff\x00", 39);
+        
         // QR to bitmap algorithm
         unsigned int modbit = 0;
         unsigned int bit = 0;
