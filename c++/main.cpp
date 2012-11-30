@@ -158,7 +158,7 @@ int main(int argc, char* argv[])
 							j++;
 						}
 						
-						if(k == (width - 1)) {
+						if(k == (realwidth - 1)) {
 							geoff.write((char*)&byte, 1);
 							j = 0;
 							k = 0;
