@@ -140,8 +140,13 @@ int main(int argc, char* argv[])
         for(int f = width-1; f >= 0; f--){
 			vline = f;
 			for (int g=0; g <4; g++) {
+			
 				for (i = width-1; i >= 0; i--) {
+				// Loop for pixels on a line
+				
+					
 					for (int h=0; h <4; h++) {
+					// X4 each pixel
 						p = vline*width + (i);
 						modbit = data[p] % 2;
 						if(modbit == 1){
@@ -158,16 +163,16 @@ int main(int argc, char* argv[])
 							j++;
 						}
 						
-						if(k == (realwidth - 1)) {
+						//if(k == (realwidth - 1)) {
+						//} else {
+							k++;
+						//}
+					}
+				} // End of a line
 							geoff.write((char*)&byte, 1);
 							j = 0;
 							k = 0;
 							byte = 0;
-						} else {
-							k++;
-						}
-					}
-				}
 			}
         }
 
