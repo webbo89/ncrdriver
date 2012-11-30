@@ -128,33 +128,39 @@ int main(int argc, char* argv[])
         unsigned int modbit = 0;
         unsigned int bit = 0;
         unsigned int byte = 0;
-        int i = 0, j = 0, k = 0;
+        int i = 0, j = 0, k = 0, line = 0;
+		int p = 0; // Pixel
         
-        for(int f = width*width-1; f >= 0; f--){
-            i = (width*(f/width)) + (width-(f % width)) - 1;
-            modbit = data[i] % 2;
-            if(modbit == 1){
-                bit = 0;
-            } else {
-                bit = 1;
-            }
+        for(int f = width-1; f >= 0; f--){
+			line = ((f/width));
+			for (int g=0; g <4; g++) {
+				for (i = width-1; i >= 0; i--) {
+					p = line*width + i;
+					modbit = data[[p] % 2;
+					if(modbit == 1){
+						bit = 0;
+					} else {
+						bit = 1;
+					}
 
-            byte = byte + (bit * pow(2,(7-(k % 8))));
-                       
-            if(k % 8 == 7){ // 7, 15, 23 etc.
-                geoff.write((char*)&byte, 1);
-                byte = 0;
-                j++;
-            }
-            
-            if(k == (width - 1)) {
-                geoff.write((char*)&byte, 1);
-                j = 0;
-                k = 0;
-                byte = 0;
-            } else {
-                k++;
-            }
+					byte = byte + (bit * pow(2,(7-(k % 8))));
+							   
+					if(k % 8 == 7){ // 7, 15, 23 etc.
+						geoff.write((char*)&byte, 1);
+						byte = 0;
+						j++;
+					}
+					
+					if(k == (width - 1)) {
+						geoff.write((char*)&byte, 1);
+						j = 0;
+						k = 0;
+						byte = 0;
+					} else {
+						k++;
+					}
+				}
+			}
         }
 
         geoff.close();
