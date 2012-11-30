@@ -138,7 +138,7 @@ int main(int argc, char* argv[])
 		int p = 0; // Pixel
         
         for(int f = width-1; f >= 0; f--){
-			vline = ((f/width));
+			vline = f;
 			for (int g=0; g <4; g++) {
 				for (i = width-1; i >= 0; i--) {
 					for (int h=0; h <4; h++) {
