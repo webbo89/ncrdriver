@@ -138,8 +138,8 @@ int main(int argc, char* argv[])
         for(int f = width-1; f >= 0; f--){
 			line = ((f/width));
 			for (int g=0; g <4; g++) {
-				for (p = width-1; p >= 0; p--) {
-					i = line*width + p;
+				for (i = width-1; i >= 0; i--) {
+					p = line*width + i;
 					modbit = data[[p] % 2;
 					if(modbit == 1){
 						bit = 0;
