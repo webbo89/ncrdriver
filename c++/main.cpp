@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
 	string stringblock;
 
 	try {
-        //BufferedAsyncSerial serial("/dev/ttyUSB0",9600);
+        BufferedAsyncSerial serial("/dev/ttyUSB0",9600);
 		if(argc > 1) {
 			ifstream inputfile (argv[1], ios::in|ios::binary|ios::ate);
 			if (inputfile.is_open())
@@ -26,10 +26,9 @@ int main(int argc, char* argv[])
 				inputfile.seekg (0, ios::beg);
 
 				//cout <<'\x1b';
-				//serial.writeString("\x1b"); // BMP to RAM pg164 of NCR7167
+				serial.writeString("\x1b"); // BMP to RAM pg164 of NCR7167
 				stringblock = "";
 
-				//serial.writeString("\x1b");
 
 				inputfile.read (memblock, size);
 				inputfile.close();
@@ -38,7 +37,7 @@ int main(int argc, char* argv[])
 				{
 					stringblock += memblock[i];//append((char*)&memblock[i], 1);
 					if(memblock[i] != ' '){
-					//serial.write((char *)&memblock[i], 1);					
+					serial.write((char *)&memblock[i], 1);					
 					cout << memblock[i];
 					}
 				}
@@ -48,11 +47,11 @@ int main(int argc, char* argv[])
 
 				//serial.write(stringblock.c_str(), (int)size);
 
-				//serial.writeString("\n");
+				serial.writeString("\n");
 				
 				//cout << "Written memblock and vblf \n";
 			
-				//serial.writeString("\x1d\x2f\x3"); // print RAM image normal density pg171 of NCR7167
+				serial.writeString("\x1d\x2f\x3"); // print RAM image normal density pg171 of NCR7167
 
 				//cout << "Done" << "\n";
 
@@ -60,7 +59,7 @@ int main(int argc, char* argv[])
 			}
 		}
 		cout << "closing serial ";
-		//serial.close();
+		serial.close();
   
     } catch(boost::system::system_error& e)
     {
