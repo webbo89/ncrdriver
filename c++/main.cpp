@@ -128,15 +128,15 @@ int main(int argc, char* argv[])
         unsigned int modbit = 0;
         unsigned int bit = 0;
         unsigned int byte = 0;
-        int i = 0, j = 0, k = 0, line = 0;
+        int i = 0, j = 0, k = 0, vline = 0;
 		int p = 0; // Pixel
         
         for(int f = width-1; f >= 0; f--){
-			line = ((f/width));
+			vline = ((f/width));
 			for (int g=0; g <4; g++) {
 				for (i = width-1; i >= 0; i--) {
-					p = line*width + i;
-					modbit = data[[p] % 2;
+					p = vline*width + i;
+					modbit = data[p] % 2;
 					if(modbit == 1){
 						bit = 0;
 					} else {
@@ -201,7 +201,7 @@ int main(int argc, char* argv[])
                 return 1;
         }*/
         
-        
+        /*
         ifstream::pos_type filesize;
         char * memblock;
         string stringblock;
@@ -253,5 +253,5 @@ int main(int argc, char* argv[])
                 {
                     cout<<"Error: "<<e.what()<<endl;
                     return 1;
-                }      
+                }  */    
 }
