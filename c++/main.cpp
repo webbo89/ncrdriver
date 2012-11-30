@@ -111,7 +111,7 @@ int main(int argc, char* argv[])
         data = qrcode->data;
         width = qrcode->width;
         
-        ofstream geoff("bmpting.bmp");
+        ofstream geoff("bmpting.bmp", ofstream::binary);
         
         unsigned int size = 62 + (width*(width + (8- (width % 8))))/8;
         
