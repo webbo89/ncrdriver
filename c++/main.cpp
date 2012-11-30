@@ -107,20 +107,20 @@ int main(int argc, char* argv[])
         // Create QRCode
         qrcode = QRcode_encodeString(shortURL.c_str(), 0, QR_ECLEVEL_H, QR_MODE_8, 0);
         
-        // Create bitmap
+        // Create bitlmap
         data = qrcode->data;
         width = qrcode->width;
         
-        ofstream geoff("bmpting.bmp");
+        ofstream geoff("bmpting.bmp", ofstream::binary);
         
 
 		int realwidth = width*4;
         unsigned int size = 62 + (realwidth*(realwidth + (8- (realwidth % 8))))/8;
         
         string header = "";
-        header.assign("\x42\x4D",2);
-        geoff << header;
+        geoff.write("\x42\x4D",2);
         geoff.write((char*)&size, 1);
+
         header.assign("\x00\x00\x00\x00\x00\x00\x00\x3E\x00\x00\x00\x28\x00\x00\x00",15);
         geoff << header;
         geoff.write((char*)&realwidth, 1);
@@ -134,11 +134,11 @@ int main(int argc, char* argv[])
         unsigned int modbit = 0;
         unsigned int bit = 0;
         unsigned int byte = 0;
-        int i = 0, j = 0, k = 0, line = 0;
+        int i = 0, j = 0, k = 0, vline = 0;
 		int p = 0; // Pixel
         
         for(int f = width-1; f >= 0; f--){
-			line = ((f/width));
+			vline = ((f/width));
 			for (int g=0; g <4; g++) {
 				for (i = realwidth-1; i >= 0; i--) {
 					p = line*width + (i%width);
@@ -207,7 +207,7 @@ int main(int argc, char* argv[])
                 return 1;
         }*/
         
-        
+        /*
         ifstream::pos_type filesize;
         char * memblock;
         string stringblock;
@@ -259,5 +259,5 @@ int main(int argc, char* argv[])
                 {
                     cout<<"Error: "<<e.what()<<endl;
                     return 1;
-                }      
+                }  */    
 }
