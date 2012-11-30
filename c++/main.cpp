@@ -142,7 +142,7 @@ int main(int argc, char* argv[])
 			for (int g=0; g <4; g++) {
 				for (i = width-1; i >= 0; i--) {
 					for (int h=0; h <4; h++) {
-						p = vline*width + (i%width);
+						p = vline*width + (i);
 						modbit = data[p] % 2;
 						if(modbit == 1){
 							bit = 0;
