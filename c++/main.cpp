@@ -141,8 +141,8 @@ int main(int argc, char* argv[])
 			vline = ((f/width));
 			for (int g=0; g <4; g++) {
 				for (i = realwidth-1; i >= 0; i--) {
-					p = line*width + (i%width);
-					modbit = data[[p] % 2;
+					p = vline*width + (i%width);
+					modbit = data[p] % 2;
 					if(modbit == 1){
 						bit = 0;
 					} else {
