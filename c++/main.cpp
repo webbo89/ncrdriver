@@ -111,7 +111,7 @@ int main(int argc, char* argv[])
         data = qrcode->data;
         width = qrcode->width;
         
-        ofstream geoff("bmpting.bmp", ofstream::binary);
+        ofstream geoff("temp.bmp", ofstream::binary);
         
 
         int realwidth = width*4;
@@ -135,7 +135,7 @@ int main(int argc, char* argv[])
         unsigned int bit = 0;
         unsigned int byte = 0;
         int i = 0, j = 0, k = 0, vline = 0, h= 0;
-		int p = 0; // Pixel
+        int p = 0; // Pixel
         
         for(int f = width-1; f >= 0; f--){
 			vline = f;
@@ -180,9 +180,8 @@ int main(int argc, char* argv[])
        
         
         
-        string stringblock;
         char* memblock;
-        ifstream::pos_type size2;
+        ifstream::pos_type qrsize;
         try {
             // Open serial connection
             BufferedAsyncSerial serial(USBPort, 9600);
@@ -195,35 +194,31 @@ int main(int argc, char* argv[])
             serial.writeString(shortURL);
             serial.writeString("\n\n");
             
-            /*
+            
             // Read bitmap and print 
-            ifstream geoff2("bmpting.bmp", ios::in|ios::binary|ios::ate);
-            if (geoff2.is_open()) {
-                size2 = geoff2.tellg();
-                memblock = new char [size2];
-                geoff2.seekg (0, ios::beg);
+            ifstream qrbitmap("temp.bmp", ios::in|ios::binary|ios::ate);
+            if (qrbitmap.is_open()) {
+                qrsize = qrbitmap.tellg();
+                memblock = new char [qrsize];
+                qrbitmap.seekg (0, ios::beg);
 
-                stringblock = "";
+                serial.writeString('\x1b');
 
-                stringblock += ("\x1b");
-
-                geoff2.read(memblock, size2);
-                geoff2.close();
+                qrbitmap.read(memblock, qrsize);
+                qrbitmap.close();
             }
-            for (int i = 0; i < size2; i++) {
-                stringblock += (memblock[i]);
+            
+            for (int i = 0; i < qrsize; i++) {
+                serial.write((char *)&memblock[i], 1);
             }
-            serial.writeString(stringblock);
-            cout << stringblock;
-            serial.writeString("\n");
+            
+            serial.writeString('\n');
             serial.writeString("\x1d\x2f\x3");
-            serial.writeString("image worked!!!!");
-            serial.close();
-  */
+            
             
             // Do spaces required
             for(int z = 0; z < precutNewlines; z++){
-                serial.writeString("\n");
+                serial.writeString('\n');
             }
 
             // Do cut if required
@@ -235,6 +230,10 @@ int main(int argc, char* argv[])
             if(beep){
                 serial.writeString("\x1b\x07");
             }
+            
+            
+            // Close serial port
+            serial.close();
             
         } catch(boost::system::system_error& e) {
                 cout<<"Error: "<<e.what()<<endl;
