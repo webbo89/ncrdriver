@@ -114,7 +114,7 @@ int main(int argc, char* argv[])
         ofstream geoff("bmpting.bmp", ofstream::binary);
         
 
-		int realwidth = width*4;
+        int realwidth = width*4;
         unsigned int size = 62 + (realwidth*(realwidth + (8- (realwidth % 8))))/8;
         
         string header = "";
@@ -179,13 +179,24 @@ int main(int argc, char* argv[])
         geoff.close();
        
         
-        /*
+        
         string stringblock;
         char* memblock;
         ifstream::pos_type size2;
         try {
+            // Open serial connection
             BufferedAsyncSerial serial(USBPort, 9600);
             
+            // Print message text
+            serial.writeString(message);
+            
+            // Print some newlines before the QR code + link text
+            serial.writeString("\n\n");
+            serial.writeString(shortURL);
+            serial.writeString("\n\n");
+            
+            /*
+            // Read bitmap and print 
             ifstream geoff2("bmpting.bmp", ios::in|ios::binary|ios::ate);
             if (geoff2.is_open()) {
                 size2 = geoff2.tellg();
@@ -208,11 +219,27 @@ int main(int argc, char* argv[])
             serial.writeString("\x1d\x2f\x3");
             serial.writeString("image worked!!!!");
             serial.close();
-  
+  */
+            
+            // Do spaces required
+            for(int z = 0; z < precutNewlines; z++){
+                serial.writeString("\n");
+            }
+
+            // Do cut if required
+            if(cut){
+                serial.writeString("\x1b\x69");
+            }
+            
+            // Beep if required
+            if(beep){
+                serial.writeString("\x1b\x07");
+            }
+            
         } catch(boost::system::system_error& e) {
                 cout<<"Error: "<<e.what()<<endl;
                 return 1;
-        }*/
+        }
         
         /*
         ifstream::pos_type filesize;
