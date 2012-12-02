@@ -151,65 +151,63 @@ int main(int argc, char* argv[])
         
 		// ***** QR_ENCODE TO BITMAP BUILDER ***** //
         for (int e = width*width-1; e>=0; e--) {
-			yline = e/width;
-			xline = e%width;
-			modbit = data[e] % 2;
-			if(modbit == 1){
-				bit = 0;
-			} else {
-				bit = 1;
-			}		
-			bitmapArray[yline][xline] = bit;
-		}
-		
-		// ***** QR_ENCODE TO BITMAP DEBUG COUT ***** //
-		if (debug) {
-			cout << "QR encode to BITMAP COUT width: " << width << endl;
-			for (int nRow = 0; nRow < width; nRow++)	{
-				for (int nCol = 1; nCol < width; nCol++) {
-								if(bitmapArray[nRow][nCol] == 1){
-									cout << ".";
-								} else {
-									cout << "#";
-								}
-				//cout << bitmapArray[nRow][nCol];
-				}
-				
-				cout << endl;
-			}
-		}
+            yline = e/width;
+            xline = e%width;
+            modbit = data[e] % 2;
+            if(modbit == 1){
+                    bit = 0;
+            } else {
+                    bit = 1;
+            }		
+            bitmapArray[yline][xline] = bit;
+        }
+
+        // ***** QR_ENCODE TO BITMAP DEBUG COUT ***** //
+        if (debug) {
+            cout << "QR encode to BITMAP COUT width: " << width << endl;
+            for (int nRow = 0; nRow < width; nRow++)	{
+                for (int nCol = 0; nCol < width; nCol++) {
+                    if(bitmapArray[nRow][nCol] == 1){
+                            cout << ".";
+                    } else {
+                            cout << "#";
+                    }
+                    //cout << bitmapArray[nRow][nCol];
+                }
+
+                cout << endl;
+            }
+        }
 		
         int bitmapArrayX4[realwidth][realwidth];
 		// ***** BITMAP to BITMAP X4 ***** //
-        for (int yloop = width-1; yloop>=0; yloop--) {
-			
-			for (int e=4; e>=0; e--) {	// Line repeater by 4
-				for (int xloop = width-1; xloop>=0; xloop--) {
-				
-				bitmapArrayX4[yloop+e][xloop*4] = bitmapArray[yloop][xloop];
-				bitmapArrayX4[yloop+e][xloop*4+1] = bitmapArray[yloop][xloop];
-				bitmapArrayX4[yloop+e][xloop*4+2] = bitmapArray[yloop][xloop];
-				bitmapArrayX4[yloop+e][xloop*4+3] = bitmapArray[yloop][xloop];
-				}
-			}
-		}
+        for (int yloop = 0; yloop < width; yloop++) {
+            for (int e = 0; e < 4; e++) {	// Line repeater by 4
+                for (int xloop = 0; xloop < width; xloop++) {
+                    bitmapArrayX4[4*yloop+e][xloop*4] = bitmapArray[yloop][xloop];
+                    bitmapArrayX4[4*yloop+e][xloop*4+1] = bitmapArray[yloop][xloop];
+                    bitmapArrayX4[4*yloop+e][xloop*4+2] = bitmapArray[yloop][xloop];
+                    bitmapArrayX4[4*yloop+e][xloop*4+3] = bitmapArray[yloop][xloop];
+                }
+            }
+        }
 				
 		
-		// ***** BITMAP X4 DEBUG COUT ***** //
-		if (debug) {
-			cout << "BITMAP X4 COUT width: " << realwidth << endl;
-			for (int nRow = 0; nRow < realwidth; nRow++)	{
-				for (int nCol = 1; nCol < realwidth; nCol++) {
-								if(bitmapArrayX4[nRow][nCol] == 1){
-									cout << ".";
-								} else {
-									cout << "#";
-								}
-				}
-				
-				cout << endl;
-			}
-		}
+        // ***** BITMAP X4 DEBUG COUT ***** //
+        if (debug) {
+            cout << "BITMAP X4 COUT width: " << realwidth << endl;
+            for (int nRow = 0; nRow < realwidth; nRow++)	{
+                for (int nCol = 0; nCol < realwidth; nCol++) {
+                    if(bitmapArrayX4[nRow][nCol] == 1){
+                            cout << ".";
+                    } else {
+                            cout << "#";
+                    }
+                }
+
+                cout << endl;
+            }
+        }
 
 
         /*for(int f = width-1; f >= 0; f--){
