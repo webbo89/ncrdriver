@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
 {
         string USBPort = "";
         bool cut = true;
-        bool debug = true;
+        bool debug = false;
         int precutNewlines = 0; 
         string message = "";
         string line = "";
