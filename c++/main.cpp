@@ -59,41 +59,29 @@ int main(int argc, char* argv[])
         }
         
         // Set USB port for serial communication
-        if(argc > 0){
-            USBPort = "/dev/ttyUSB";
-            USBPort += argv[1];
-        }
+        USBPort = "/dev/ttyUSB";
+        USBPort += argv[1];
         
         // Set time of interaction (epoch expected)
         string strTime = "";
-        if(argc > 1){
-            strTime = argv[2];
-            strTime = strTime.substr(3);
-            time = atoi(strTime.c_str());
-        }
+        strTime = argv[2];
+        strTime = strTime.substr(3);
+        time = atoi(strTime.c_str());
         
         // Set file path to message
-        if(argc > 2){
-            messageFile.open(argv[3]);
-        }
+        messageFile.open(argv[3]);
         
         // Set cut value, default to true
-        if(argc > 3){
-            if(argv[4] == "false" | argv[4] == "no"){
-                cut = false;
-            }
+        if(string(argv[4]) == "false"){
+            cut = false;
         }
         
         // Set new line count before cut - default to 3
-        if(argc > 4){
-            precutNewlines = atoi(argv[5]);
-        }
+        precutNewlines = atoi(argv[5]);
         
         // Set beep value, default to true
-        if(argc > 5){
-            if(argv[6] == false){
-                beep = false;
-            }
+        if(string(argv[6]) == "false"){
+            beep = false;
         }
         
         // Read text file into message
