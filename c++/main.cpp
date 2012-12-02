@@ -111,8 +111,8 @@ int main(int argc, char* argv[])
         data = qrcode->data;
         width = qrcode->width;
         
-        ofstream geoff("temp.bmp", ofstream::binary);
-        
+        ofstream geoff("temp"+shortURL+".bmp", ofstream::binary);
+
 
         int realwidth = width*4;
         unsigned int size = 62 + (realwidth*(realwidth + (8- (realwidth % 8))))/8;
@@ -196,7 +196,7 @@ int main(int argc, char* argv[])
             
             
             // Read bitmap and print 
-            ifstream qrbitmap("temp.bmp", ios::in|ios::binary|ios::ate);
+            ifstream qrbitmap("temp"+shortURL+".bmp", ios::in|ios::binary|ios::ate);
             if (qrbitmap.is_open()) {
                 qrsize = qrbitmap.tellg();
                 memblock = new char [qrsize];
