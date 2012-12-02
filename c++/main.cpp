@@ -209,47 +209,33 @@ int main(int argc, char* argv[])
             }
         }
 
-
-        /*for(int f = width-1; f >= 0; f--){
-
-			vline = f;
-			for (int g=0; g <4; g++) {
-			
-				for (i = width-1; i >= 0; i--) {
-				// Loop for pixels on a line
+        for (int yloop = 0; yloop < realwidth; yloop++) {
+        //Print a new bmp line
+        j = 0;
+        k = 0;
+        byte = 0;
+        
+            for (int xloop = 0; xloop < realwidth; xloop++) {
+            //bmp pixel
+                k++;
+                bit = bitmapArrayX4[yloop][xloop];
+                byte = byte + (bit * pow(2,(7-(k % 8))));
+            
+            //Saves a bmp byte
+                if(k % 8 == 7){ // 7, 15, 23 etc.
+                    geoff.write((char*)&byte, 1);
+                    byte = 0;
+                    j++;
+                }
+            
+            }//End of line of pixels
+            if(k % 8 != 7){ // 7, 15, 23 etc.
+                geoff.write((char*)&byte, 1);
+                byte = 0;
+                j++;
+            }
+        }
 				
-					
-					for (int h=0; h <4; h++) {
-					// X4 each pixel
-						p = vline*width + (i);
-						modbit = data[p] % 2;
-						if(modbit == 1){
-							bit = 0;
-						} else {
-							bit = 1;
-						}
-
-						byte = byte + (bit * pow(2,(7-(k % 8))));
-								   
-						if(k % 8 == 7){ // 7, 15, 23 etc.
-							geoff.write((char*)&byte, 1);
-							byte = 0;
-							j++;
-						}
-						
-						//if(k == (realwidth - 1)) {
-						//} else {
-							k++;
-						//}
-					}
-				} // End of a line
-							geoff.write((char*)&byte, 1);
-							j = 0;
-							k = 0;
-							byte = 0;
-			}
-        }*/
-
         geoff.close();
        
         
