@@ -1,0 +1,8 @@
+./async port(int) time(epoch) messagepath cut(bool) lines(int) beep(bool)
+
+
+YOU NEED TO CHMOD 777 /dev/ttyUSBX where the printer is connected!!!
+
+Samples:
+./async 0 1354133999 message.txt true 3 true
+./async 0 1354133999 message.txt false 0 false
