@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
 {
         string USBPort = "";
         bool cut = true;
-        bool debug = false;
+        bool debug = true;
         int precutNewlines = 0; 
         string message = "";
         string line = "";
@@ -102,24 +102,17 @@ int main(int argc, char* argv[])
         
         string filename = "temp"+shortURL+".bmp";
         
-        ofstream bmpfile(filename.c_str(), ofstream::binary);
-
+        ofstream bmpfile("bit.bmp", ofstream::binary); //filename.c_str()
 
         int realwidth = width*4;
         unsigned int size = 62 + (realwidth*(realwidth + (8- (realwidth % 8))))/8;
         
-        string header = "";
         bmpfile.write("\x42\x4D",2);
-        bmpfile.write((char*)&size, 1);
-
-        header.assign("\x00\x00\x00\x00\x00\x00\x00\x3E\x00\x00\x00\x28\x00\x00\x00",15);
-        bmpfile << header;
+        bmpfile.write("\x00\x00\x00\x00\x00\x00\x00\x00\x3E\x00\x00\x00\x28\x00\x00\x00",16);
         bmpfile.write((char*)&realwidth, 1);
-        header.assign("\x00\x00\x00",3);
-        bmpfile << header;
+        bmpfile.write("\x00\x00\x00",3);
         bmpfile.write((char*)&realwidth, 1);
-        header.assign("\x00\x00\x00\x01\x00\x01\x00\x00\x00\x00\x00\x64\x00\x00\x00\xc4\x0e\x00\x00\xc4\x0e\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff\xff\x00", 39);
-        bmpfile << header;
+        bmpfile.write("\x00\x00\x00\x01\x00\x01\x00\x00\x00\x00\x00\x40\x07\x00\x00\xc4\x0e\x00\x00\xc4\x0e\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff\xff\x00", 39);
 
         // QR to bitmap algorithm
         unsigned int modbit = 0;
@@ -242,7 +235,7 @@ int main(int argc, char* argv[])
             
             
             // Read bitmap and print 
-            ifstream qrbitmap(filename.c_str(), ios::in|ios::binary|ios::ate);
+            ifstream qrbitmap("bit.bmp", ios::in|ios::binary|ios::ate);
             if (qrbitmap.is_open()) {
                 qrsize = qrbitmap.tellg();
                 memblock = new char [qrsize];
