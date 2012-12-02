@@ -114,24 +114,24 @@ int main(int argc, char* argv[])
         
         string filename = "temp"+shortURL+".bmp";
         
-        ofstream geoff(filename.c_str(), ofstream::binary);
+        ofstream bmpfile(filename.c_str(), ofstream::binary);
 
 
         int realwidth = width*4;
         unsigned int size = 62 + (realwidth*(realwidth + (8- (realwidth % 8))))/8;
         
         string header = "";
-        geoff.write("\x42\x4D",2);
-        geoff.write((char*)&size, 1);
+        bmpfile.write("\x42\x4D",2);
+        bmpfile.write((char*)&size, 1);
 
         header.assign("\x00\x00\x00\x00\x00\x00\x00\x3E\x00\x00\x00\x28\x00\x00\x00",15);
-        geoff << header;
-        geoff.write((char*)&realwidth, 1);
+        bmpfile << header;
+        bmpfile.write((char*)&realwidth, 1);
         header.assign("\x00\x00\x00",3);
-        geoff << header;
-        geoff.write((char*)&realwidth, 1);
+        bmpfile << header;
+        bmpfile.write((char*)&realwidth, 1);
         header.assign("\x00\x00\x00\x01\x00\x01\x00\x00\x00\x00\x00\x64\x00\x00\x00\xc4\x0e\x00\x00\xc4\x0e\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff\xff\x00", 39);
-        geoff << header;
+        bmpfile << header;
 
         // QR to bitmap algorithm
         unsigned int modbit = 0;
@@ -149,7 +149,7 @@ int main(int argc, char* argv[])
             }
         }
         
-		// ***** QR_ENCODE TO BITMAP BUILDER ***** //
+        // ***** QR_ENCODE TO BITMAP BUILDER ***** //
         for (int e = width*width-1; e>=0; e--) {
             yline = e/width;
             xline = e%width;
@@ -180,7 +180,7 @@ int main(int argc, char* argv[])
         }
 		
         int bitmapArrayX4[realwidth][realwidth];
-		// ***** BITMAP to BITMAP X4 ***** //
+        // ***** BITMAP to BITMAP X4 ***** //
         for (int yloop = 0; yloop < width; yloop++) {
             for (int e = 0; e < 4; e++) {	// Line repeater by 4
                 for (int xloop = 0; xloop < width; xloop++) {
@@ -223,23 +223,21 @@ int main(int argc, char* argv[])
             
             //Saves a bmp byte
                 if(k % 8 == 7){ // 7, 15, 23 etc.
-                    geoff.write((char*)&byte, 1);
+                    bmpfile.write((char*)&byte, 1);
                     byte = 0;
                     j++;
                 }
             
             }//End of line of pixels
             if(k % 8 != 7){ // 7, 15, 23 etc.
-                geoff.write((char*)&byte, 1);
+                bmpfile.write((char*)&byte, 1);
                 byte = 0;
                 j++;
             }
         }
 				
-        geoff.close();
+        bmpfile.close();
        
-        
-        
         char* memblock;
         ifstream::pos_type qrsize;
         try {
@@ -274,7 +272,7 @@ int main(int argc, char* argv[])
             
             serial.writeString("\n");
             serial.writeString("\x1d\x2f\x3");
-            
+            serial.writeString("\n\n\n\n\n\n");
             
             // Do spaces required
             for(int z = 0; z < precutNewlines; z++){
