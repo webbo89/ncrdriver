@@ -186,10 +186,10 @@ int main(int argc, char* argv[])
 			for (int e=4; e>=0; e--) {	// Line repeater by 4
 				for (int xloop = width-1; xloop>=0; xloop--) {
 				
-				bitmapArrayX4[yloop+e][xloop] = bitmapArray[yloop][xloop];
-				bitmapArrayX4[yloop+e][xloop+1] = bitmapArray[yloop][xloop];
-				bitmapArrayX4[yloop+e][xloop+2] = bitmapArray[yloop][xloop];
-				bitmapArrayX4[yloop+e][xloop+3] = bitmapArray[yloop][xloop];
+				bitmapArrayX4[yloop+e][xloop*4] = bitmapArray[yloop][xloop];
+				bitmapArrayX4[yloop+e][xloop*4+1] = bitmapArray[yloop][xloop];
+				bitmapArrayX4[yloop+e][xloop*4+2] = bitmapArray[yloop][xloop];
+				bitmapArrayX4[yloop+e][xloop*4+3] = bitmapArray[yloop][xloop];
 				}
 			}
 		}
