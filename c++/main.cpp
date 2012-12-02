@@ -107,11 +107,13 @@ int main(int argc, char* argv[])
         // Create QRCode
         qrcode = QRcode_encodeString(shortURL.c_str(), 0, QR_ECLEVEL_H, QR_MODE_8, 0);
         
-        // Create bitlmap
+        // Create bitmap
         data = qrcode->data;
         width = qrcode->width;
         
-        ofstream geoff("temp"+shortURL+".bmp", ofstream::binary);
+        string filename = "temp"+shortURL+".bmp";
+        
+        ofstream geoff(filename.c_str(), ofstream::binary);
 
 
         int realwidth = width*4;
@@ -136,14 +138,20 @@ int main(int argc, char* argv[])
         unsigned int byte = 0;
 
         int i = 0, j = 0, k = 0, yline = 0, xline = 0, h= 0;
-		int p = 0; // Pixel
+        int p = 0; // Pixel
 						//lines   x pixel
-		int bitmapArray[realwidth][realwidth] = {{0}};
-		
+        int bitmapArray[width][width];
+        
+        for(i = 0; i < width; i++){
+            for(j = 0; j < width; j++){
+                bitmapArray[i][j] = 0;
+            }
+        }
+        
         for (int e = width*width-1; e>=0; e--) {
 			yline = e/width;
 			xline = e%width;
-			modbit = data[p] % 2;
+			modbit = data[e] % 2;
 			if(modbit == 1){
 				bit = 0;
 			} else {
@@ -154,7 +162,12 @@ int main(int argc, char* argv[])
 		
 		for (int nRow = 0; nRow < width; nRow++)	{
 			for (int nCol = 1; nCol < width; nCol++) {
-			cout << bitmapArray[nRow][nCol];
+                            if(bitmapArray[nRow][nCol] == 1){
+                                cout << ".";
+                            } else {
+                                cout << "#";
+                            }
+			//cout << bitmapArray[nRow][nCol];
 			}
 			
 			cout << endl;
@@ -220,13 +233,13 @@ int main(int argc, char* argv[])
             
             
             // Read bitmap and print 
-            ifstream qrbitmap("temp"+shortURL+".bmp", ios::in|ios::binary|ios::ate);
+            ifstream qrbitmap(filename.c_str(), ios::in|ios::binary|ios::ate);
             if (qrbitmap.is_open()) {
                 qrsize = qrbitmap.tellg();
                 memblock = new char [qrsize];
                 qrbitmap.seekg (0, ios::beg);
 
-                serial.writeString('\x1b');
+                serial.writeString("\x1b");
 
                 qrbitmap.read(memblock, qrsize);
                 qrbitmap.close();
@@ -236,13 +249,13 @@ int main(int argc, char* argv[])
                 serial.write((char *)&memblock[i], 1);
             }
             
-            serial.writeString('\n');
+            serial.writeString("\n");
             serial.writeString("\x1d\x2f\x3");
             
             
             // Do spaces required
             for(int z = 0; z < precutNewlines; z++){
-                serial.writeString('\n');
+                serial.writeString("\n");
             }
 
             // Do cut if required
