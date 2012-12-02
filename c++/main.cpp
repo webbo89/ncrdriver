@@ -134,10 +134,26 @@ int main(int argc, char* argv[])
         unsigned int modbit = 0;
         unsigned int bit = 0;
         unsigned int byte = 0;
-        int i = 0, j = 0, k = 0, vline = 0, h= 0;
+        int i = 0, j = 0, k = 0, yline = 0, xline = 0, h= 0;
 		int p = 0; // Pixel
-        
-        for(int f = width-1; f >= 0; f--){
+						//lines   x pixel
+		int bitmapArray[realwidth][realwidth] = {{0}};
+		
+        for (int e = width*width-1; e>=0; e--) {
+			yline = e/width;
+			xline = e%width;
+			modbit = data[p] % 2;
+			if(modbit == 1){
+				bit = 0;
+			} else {
+				bit = 1;
+			}		
+			bitmapArray[yline][xline] = bit;
+		}
+		
+		print
+		
+        /*for(int f = width-1; f >= 0; f--){
 			vline = f;
 			for (int g=0; g <4; g++) {
 			
@@ -174,7 +190,7 @@ int main(int argc, char* argv[])
 							k = 0;
 							byte = 0;
 			}
-        }
+        }*/
 
         geoff.close();
        
