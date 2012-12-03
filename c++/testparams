@@ -5,4 +5,13 @@ YOU NEED TO CHMOD 777 /dev/ttyUSBX where the printer is connected!!!
 
 Samples:
 ./async 0 1354133999 message.txt true 3 true
-./async 0 1354133999 message.txt false 0 false
+./async 0 1354231411 message.txt true 0 false
+./async 0 1354235699 message.txt false 0 false
+./async 0 1354133999 message.txt true 0 true
+./async 0 1354134699 message.txt true 0 false
+./async 0 1354136999 message.txt true 0 true
+./async 0 1354133999 message.txt true 0 false
+./async 0 1354136499 message.txt true 0 true
+./async 0 1354134579 message.txt true 0 false
+./async 0 1354344367 message.txt true 0 true
+./async 0 1352343536 message.txt true 0 false
