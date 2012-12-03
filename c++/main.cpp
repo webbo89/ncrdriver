@@ -84,11 +84,7 @@ int main(int argc, char* argv[])
             beep = false;
         }
         
-        // Read text file into message
-        while(messageFile.good()){
-           getline(messageFile,line);
-           message += line + "\n";
-        }
+
         
         // Make shorturl
         shortURL = "http://icrobot.net/" + getShortcode(time);
@@ -233,7 +229,12 @@ int main(int argc, char* argv[])
             BufferedAsyncSerial serial(USBPort, 9600);
             
             // Print message text
-            serial.writeString(message);
+            // Read text file into message
+            while(messageFile.good()){
+               getline(messageFile,line);
+               serial.writeString(line+'\n');
+            }
+            messageFile.close();
             
             // Print some newlines before the QR code + link text
             serial.writeString("\n\n");
