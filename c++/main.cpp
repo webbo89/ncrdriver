@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
 {
         string USBPort = "";
         bool cut = true;
-        bool debug = true;
+        bool debug = false;
         int precutNewlines = 0; 
         string message = "";
         string line = "";
@@ -100,9 +100,8 @@ int main(int argc, char* argv[])
         data = qrcode->data;
         width = qrcode->width;
         
-        string filename = "temp"+shortURL+".bmp";
-        
-        ofstream bmpfile("bit.bmp", ofstream::binary); //filename.c_str()
+        string filename = "../qrcodes/temp"+getShortcode(time)+".bmp";
+        ofstream bmpfile(filename.c_str(), ofstream::binary);
 
         int realwidth = width*4;
         unsigned int size = 62 + (realwidth*(realwidth + (8- (realwidth % 8))))/8;
@@ -120,7 +119,7 @@ int main(int argc, char* argv[])
         unsigned int byte = 0;
 
         int i = 0, j = 0, k = 0, yline = 0, xline = 0, h= 0;
-        int p = 0; // Pixel
+        int p = 0; int zero = 0; // Pixel
 						//lines   x pixel
         int bitmapArray[width][width];
         
@@ -190,30 +189,38 @@ int main(int argc, char* argv[])
             }
         }
 
-        for (int yloop = 0; yloop < realwidth; yloop++) {
+        for (int yloop = realwidth-1; yloop >= 0; yloop--) {
         //Print a new bmp line
-        j = 0;
         k = 0;
         byte = 0;
         
             for (int xloop = 0; xloop < realwidth; xloop++) {
-            //bmp pixel
-                k++;
+                //bmp pixel
+                
                 bit = bitmapArrayX4[yloop][xloop];
                 byte = byte + (bit * pow(2,(7-(k % 8))));
-            
-            //Saves a bmp byte
+                //Saves a bmp byte
                 if(k % 8 == 7){ // 7, 15, 23 etc.
                     bmpfile.write((char*)&byte, 1);
                     byte = 0;
-                    j++;
                 }
+                k++;
             
             }//End of line of pixels
             if(k % 8 != 7){ // 7, 15, 23 etc.
                 bmpfile.write((char*)&byte, 1);
                 byte = 0;
-                j++;
+            }
+            if((realwidth % 8) != 0){
+                if((((realwidth % 8) + 1) % 2) == 1){
+                    //odd put zero char
+                    bmpfile.write((char*)&zero,1);
+                }
+            } else {
+                if((((realwidth % 8)) % 2) == 1){
+                    //odd put zero char
+                    bmpfile.write((char*)&zero,1);
+                }
             }
         }
 				
@@ -235,7 +242,7 @@ int main(int argc, char* argv[])
             
             
             // Read bitmap and print 
-            ifstream qrbitmap("bit.bmp", ios::in|ios::binary|ios::ate);
+            ifstream qrbitmap(filename.c_str(), ios::in|ios::binary|ios::ate);
             if (qrbitmap.is_open()) {
                 qrsize = qrbitmap.tellg();
                 memblock = new char [qrsize];
